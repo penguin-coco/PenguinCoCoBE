@@ -1,0 +1,1790 @@
+swagger: "2.0"
+info:
+  description: "PenguinCoCo Api Document"
+  version: "1.0.0"
+  title: "PenguinCoCo Api"
+#host: "penguin-coco-be.herokuapp.com/api/"
+host: "localhost:8081"
+basePath: "/"
+tags:
+  - name: "common-api"
+    description: "使用者登入、登出"
+  - name: "student-api"
+    description: "學生相關api"
+  - name: "problem-api"
+    description: "題目相關api"
+  - name: "judge-api"
+    description: "程式批改相關api"
+  - name: "teacher-api"
+    description: "老師相關api"
+  - name: "assistant-api"
+    description: "助教相關api"
+  - name: "course-api"
+    description: "課程相關api"
+  - name: "admin-api"
+    description: "管理員相關api"
+  - name: "problemBank-api"
+    description: "題庫相關api"
+  - name: "team api"
+    description: "隊伍相關api(最後做)"
+schemes:
+  - "https"
+  - "http"
+definitions:
+  forbiddenError:
+    type: object
+    properties:
+      error:
+        type: string
+        example: "使用者沒有權限執行該存取"
+paths:
+  /common/login:
+    post:
+      tags:
+        - "common-api"
+      description: "使用者登入"
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              account:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: 登入成功
+          schema:
+            required:
+              - authority
+            properties:
+              authority:
+                type: string
+        400:
+          description: 登入失敗
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example:
+                  "帳號或密碼輸入錯誤"
+  /common/logout:
+    delete:
+      tags:
+        - "common-api"
+      description: "使用者登出"
+      produces:
+        - "application/json"
+      responses:
+        204:
+          description: 登出成功
+        404:
+          description: 登出失敗
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "使用者當前不為登入狀態"
+  /student/password:
+    put:
+      tags:
+        - "student-api"
+      description: "學生更改密碼"
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              oriPassword:
+                type: string
+              newPassword:
+                type: string
+      responses:
+        201:
+          description: 學生更改密碼成功
+        403:
+          description: 學生更改密碼失敗
+          schema:
+            $ref: "#/definitions/forbiddenError"
+        404:
+          description: 學生更改密碼失敗
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該學生資料"
+  /student/course:
+    get:
+      tags:
+        - "student-api"
+      summary: ""
+      description: "取得學生全部課程資訊"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功取得學生全部課程資訊
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                courseId:
+                  type: string
+                courseName:
+                  type: string
+                teacherName:
+                  type: string
+                semester:
+                  type: string
+        403:
+          description: 無法取得學生全部課程資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /student/course/{courseId}/profile:
+    get:
+      tags:
+        - "student-api"
+      summary: ""
+      description: "取得課程下的個人學生資料"
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得課程下的個人學生資料
+          schema:
+            type: object
+            properties:
+              account:
+                type: string
+              name:
+                type: string
+              studentClass:
+                type: string
+              undoNum:
+                type: integer
+              doneNum:
+                type: integer
+              bestCodeNum:
+                type: integer
+              correctNum:
+                type: integer
+              incorrectNum:
+                type: integer
+        403:
+          description: 無法取得課程下的個人學生資料
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得課程下的個人學生資料
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該學生或該課程資料"
+  /student/course/{courseId}/problem/judgeInfo:
+    get:
+      tags:
+        - "student-api"
+      summary: ""
+      description: "取得課程下的學生歷史成績及題目資訊"
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得課程下的個人學生資料
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                problemId:
+                  type: integer
+                problemName:
+                  type: string
+                type:
+                  type: string
+                historyCodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      handDate:
+                        type: string
+                        format: date
+                      code:
+                        type: string
+                      runTime:
+                        type: number
+                      output:
+                        type: array
+                        items:
+                          type: string
+                      symbol:
+                        type: array
+                        items:
+                          type: string
+                      score:
+                        type: number
+                      errorMessage:
+                        type: array
+                        items:
+                          type: string
+                rate:
+                  type: number
+                correctRate:
+                  type: number
+                isBestCode:
+                  type: boolean
+                copys:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      account:
+                        type: string
+                      similarity:
+                        type: number
+        403:
+          description: 無法取得課程下的個人學生資料
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得課程下的個人學生資料
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該學生或該課程資料"
+  /student/course/{courseId}/problem:
+    get:
+      tags:
+        - "student-api"
+      summary: ""
+      description: "取得課程下的學生所有題目資料"
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: "integer"
+        - name: type
+          in: query
+          required: true
+          type: "string"
+        - name: isJudge
+          in: query
+          required: true
+          type: boolean
+      responses:
+        200:
+          description: 成功取得課程下的學生所有題目資料
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                problemId:
+                  type: integer
+                name:
+                  type: string
+                type:
+                  type: string
+                deadline:
+                  type: string
+                  format: date
+                rate:
+                  type: number
+        403:
+          description: 無法取得課程下的學生所有題目資料
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得課程下的學生所有題目資料
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該學生或該課程資料"
+  /student/course/problem/rate:
+    put:
+      tags:
+        - "student-api"
+      summary: ""
+      description: "課程下的學生對題目的難易度評分"
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              problemId:
+                type: integer
+              rate:
+                type: number
+      responses:
+        200:
+          description: 課程下的學生對題目的難易度評分成功
+        403:
+          description: 課程下的學生對題目的難易度評分失敗
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 課程下的學生對題目的難易度評分失敗
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該學生、題目資料"
+  /problem/{problemId}:
+    get:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 取得此題目的資訊
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得此題目的資訊
+          schema:
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              rate:
+                type: number
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    inputSample:
+                      type: string
+                    outputSample:
+                      type: string
+              deadline:
+                type: string
+                format: date
+              correctNum:
+                type: integer
+              incorrectNum:
+                type: integer
+              correctRate:
+                type: number
+              pattern:
+                type: string
+        403:
+          description: 無法取得此題目的資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得此題目的資訊
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該題目資料"
+    delete:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 刪除題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemId
+          in: path
+          type: string
+          required: true
+      responses:
+        204:
+          description: 成功刪除題目
+        403:
+          description: 無法刪除題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法刪除題目
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題目資料
+  /problem/judgeInfo:
+    get:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 取得課程下的所有題目的批改資訊
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: query
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得課程下的所有題目的批改資訊
+          schema:
+            properties:
+              problemId:
+                type: integer
+              name:
+                type: string
+              type:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              status:
+                type: string
+                example:
+                 - 已關閉
+                 - 可作答
+                 - 已過期
+              undoStudentNum:
+                type: integer
+              doneStudentNum:
+                type: integer
+              rate:
+                type: number
+              correctRate:
+                type: number
+              deadline:
+                type: string
+                format: date
+              bestStudentAccount:
+                type: string
+              bestStudentName:
+                type: string
+              pattern:
+                type: array
+                items:
+                  type: string
+              bestRunTime:
+                type: number
+        403:
+          description: 無法取得課程下的所有題目的批改資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得課程下的所有題目的批改資訊
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該課程資料"
+  /problem/{problemId}/score:
+    get:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 取得題目下的所有學生成績
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得題目下的所有學生成績
+          schema:
+            properties:
+              studentAccount:
+                type: integer
+              studentName:
+                type: string
+              studentClass:
+                type: string
+              score:
+                type: number
+              code:
+                type: string
+        403:
+          description: 無法取得題目下的所有學生成績
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得題目下的所有學生成績
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該題目資料"
+  /problem/{problemId}/copy:
+    get:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 取得題目下的所有學生成績
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: 成功取得題目下的所有學生抄襲
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                studentOneAccount:
+                  type: string
+                studentOneName:
+                  type: string
+                studentTwoAccount:
+                  type: string
+                studentTwoName:
+                  type: string
+                similarity:
+                  type: number
+        403:
+          description: 無法取得題目下的所有學生抄襲
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得題目下的所有學生抄襲
+          schema:
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: "找不到該題目資料"
+  /problem:
+    post:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 新增題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              name:
+                type: string
+              type:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: object
+                properties:
+                  inputSample:
+                    type: string
+                  outputSample:
+                    type: string
+              deadline:
+                type: string
+                format: date
+              pattern:
+                type: array
+                items:
+                  type: string
+      responses:
+        201:
+          description: 成功新增題目
+          schema:
+            type: object
+            properties:
+              problemId:
+                type: integer
+        403:
+          description: 無法新增題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+    put:
+      tags:
+        - "problem-api"
+      summary: ""
+      description: 編輯題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              name:
+                type: string
+              type:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: object
+                properties:
+                  inputSample:
+                    type: string
+                  outputSample:
+                    type: string
+              deadline:
+                type: string
+                format: date
+              pattern:
+                type: array
+                items:
+                  type: string
+      responses:
+        200:
+          description: 成功編輯題目
+          schema:
+            type: object
+            properties:
+              problemId:
+                type: integer
+        403:
+          description: 無法編輯題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法編輯題目
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題目資料
+  /judge:
+    post:
+      tags:
+        - "judge-api"
+      summary: ""
+      description: 批改代碼
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              problemId:
+                type: integer
+              code:
+                type: string
+              language:
+                type: string
+                example:
+                  - Java
+                  - Python
+      responses:
+        201:
+          description: 成功批改代碼
+          schema:
+            type: object
+            properties:
+              judgeId:
+                type: integer
+        403:
+          description: 無法批改代碼
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /judge/{judgeId}:
+    get:
+      tags:
+        - "judge-api"
+      summary: ""
+      description: 取得學生該次被批改後的資訊
+      produces:
+        - "application/json"
+      parameters:
+        - name: judgeId
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: 成功取得學生該次被批改後的資訊
+          schema:
+            type: object
+            properties:
+              handDate:
+                type: string
+                format: date
+              score:
+                type: number
+              runTime:
+                type: number
+              code:
+                type: string
+              symbol:
+                type: array
+                items:
+                  type: string
+              output:
+                type: array
+                items:
+                  type: string
+              errorInfo:
+                type: array
+                items:
+                  type: string
+              best:
+                type: boolean
+        403:
+          description: 無法取得學生該次被批改後的資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得學生該次被批改後的資訊
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該次批改資訊
+  /judge/status:
+    get:
+      tags:
+        - "judge-api"
+      summary: ""
+      description: 取得學生在此題是否已被批改
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemId
+          in: query
+          type: integer
+          required: true
+      responses:
+        200:
+          description: 成功學生在此題是否已被批改
+          schema:
+            type: object
+            properties:
+              judgeId:
+                description: true才有值，false為""
+                type: integer
+              judged:
+                type: boolean
+        403:
+          description: 無法學生在此題是否已被批改
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法學生在此題是否已被批改
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題目資訊
+  /judge/copy:
+    post:
+      tags:
+        - "judge-api"
+      summary: ""
+      description: 計算所有學生對該題目的抄襲結果
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              problemId:
+                type: integer
+      responses:
+        201:
+          description: 成功計算所有學生對該題目的抄襲結果
+        403:
+          description: 無法計算所有學生對該題目的抄襲結果
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法計算所有學生對該題目的抄襲結果
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題目資訊
+  /teacher/course:
+    post:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 教師成功建立課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseName:
+                type: string
+              semester:
+                type: string
+              studentClass:
+                type: string
+              taList:
+                type: array
+                description: 助教學號List
+                items:
+                  type: string
+      responses:
+        201:
+          description: 教師成功建立課程
+        403:
+          description: 教師無法建立課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+    put:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 教師成功刪除課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+      responses:
+        200:
+          description: 教師成功刪除課程
+        403:
+          description: 教師無法刪除課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 教師無法刪除課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程
+    get:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 取得所有老師的所有課程資訊
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功取得所有老師的所有課程資訊
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                courseId:
+                  type: integer
+                courseName:
+                  type: string
+                teacherName:
+                  type: string
+                semeter:
+                  type: string
+                class:
+                  type: array
+                  items:
+                    type: string
+                taList:
+                  type: array
+                  description: 助教學號List
+                  items:
+                    type: string
+        403:
+          description: 無法取得所有老師的所有課程資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /teacher/course/student:
+    put:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 教師成功將學生加入課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              action:
+                type: integer
+                description: 0(加入)，1(退出)
+              accountList:
+                type: array
+                description: 學生學號List
+                items:
+                  type: string
+      responses:
+        201:
+          description: 教師成功將學生加入課程
+        403:
+          description: 教師無法將學生加入課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 教師無法將學生加入課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程、學生
+  /teacher/course/assistant:
+    put:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 教師成功將助教加入課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              action:
+                type: integer
+                description: 0(加入)，1(退出)
+              accountList:
+                type: array
+                description: 助教學號List
+                items:
+                  type: string
+      responses:
+        201:
+          description: 教師成功將助教加入課程
+        403:
+          description: 教師無法將助教加入課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 教師無法將助教加入課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程、助教
+  /teacher/studentClass:
+    get:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 取得該老師的所授課的班級列表
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功取得該老師的所授課的班級列表
+          schema:
+            type: array
+            items:
+              type: string
+              description: 班級名稱List
+        403:
+          description: 無法取得該老師的所授課的班級列表
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /teacher/unassignAssistant:
+    get:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 取得該老師授課課程中還未被指派的助教名單
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功取得該老師授課課程中還未被指派的助教名單
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                assistantAccount:
+                  type: string
+                assistantName:
+                  type: string
+        403:
+          description: 無法取得該老師授課課程中還未被指派的助教名單
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /teacher/allStudentAccount:
+    get:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 取得教師該授課課程下的所有學生學號
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: query
+          type: integer
+      responses:
+        200:
+          description: 成功教師該授課課程下的所有學生學號
+          schema:
+            type: array
+            items:
+              type: string
+              description: 學生學號列表
+        403:
+          description: 無法教師該授課課程下的所有學生學號
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /teacher/allStudentProfile:
+    get:
+      tags:
+        - "teacher-api"
+      summary: ""
+      description: 取得學生資料
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: array
+            items:
+              type: string
+              description: 學生學號列表
+      responses:
+        200:
+          description: 成功取得取得學生資料
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                account:
+                  type: string
+                name:
+                  type: string
+                studentClass:
+                  type: string
+        403:
+          description: 無法取得學生資料
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /assistant/course/student:
+    put:
+      tags:
+        - "assistant-api"
+      summary: ""
+      description: 助教成功將學生加入課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              action:
+                type: integer
+                description: 0(加入)，1(退出)
+              accountList:
+                type: array
+                description: 學生學號List
+                items:
+                  type: string
+      responses:
+        201:
+          description: 助教成功將學生加入課程
+        403:
+          description: 助教無法將學生加入課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 助教無法將學生加入課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程、學生
+  /assistant/course:
+    get:
+      tags:
+        - "assistant-api"
+      summary: ""
+      description: 取得助教的所有課程
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功取得助教的所有課程
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                courseId:
+                  type: integer
+                courseName:
+                  type: string
+                teacherName:
+                  type: string
+                semester:
+                  type: string
+                class:
+                  type: array
+                  items:
+                    type: string
+        403:
+          description: 無法取得助教的所有課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得助教的所有課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該助教的資料
+  /assistant/allStudentAccount:
+    get:
+      tags:
+        - "assistant-api"
+      summary: ""
+      description: 取得助教該授課課程下的所有學生學號
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: query
+          type: integer
+      responses:
+        200:
+          description: 成功取得助教該授課課程下的所有學生學號
+          schema:
+            type: array
+            items:
+              type: string
+              description: 學生學號列表
+        403:
+          description: 無法取得助教該授課課程下的所有學生學號
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /assistant/allStudentProfile:
+    get:
+      tags:
+        - "assistant-api"
+      summary: ""
+      description: 取得學生資料
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: array
+            items:
+              type: string
+              description: 學生學號列表
+      responses:
+        200:
+          description: 成功取得取得學生資料
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                account:
+                  type: string
+                name:
+                  type: string
+                studentClass:
+                  type: string
+        403:
+          description: 無法取得學生資料
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /course/{courseId}:
+    delete:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 刪除課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: 成功刪除課程
+        403:
+          description: 無法刪除課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法刪除課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /course:
+    put:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 編輯課程
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              courseName:
+                type: string
+              semester:
+                type: string
+              taList:
+                type: array
+                description: 助教學號列表
+                items:
+                  type: string
+      responses:
+        200:
+          description: 成功編輯課程
+        403:
+          description: 無法編輯課程
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法編輯課程
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /course/{courseId}/correctRank:
+    get:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 取得該課程下正確解題的學生排行（前五名，有同值則同名）
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 成功取得該課程下正確解題的學生排行（前五名，有同值則同名）
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                rank:
+                  type: integer
+                account:
+                  type: string
+                name:
+                  type: string
+                correctNum:
+                  type: integer
+
+        403:
+          description: 無法取得該課程下正確解題的學生排行（前五名，有同值則同名）
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得該課程下正確解題的學生排行（前五名，有同值則同名）
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /course/{courseId}/bestCodeRank:
+    get:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 取得最佳解答的學生排行 （前五名，有同值則同名）
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 成功取得最佳解答的學生排行 （前五名，有同值則同名）
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                rank:
+                  type: integer
+                account:
+                  type: string
+                name:
+                  type: string
+                bestCodeNum:
+                  type: integer
+
+        403:
+          description: 無法取得最佳解答的學生排行 （前五名，有同值則同名）
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得最佳解答的學生排行 （前五名，有同值則同名）
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /course/feedback:
+    post:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 新增該課程下的回饋
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+              content:
+                type: string
+      responses:
+        201:
+          description: 成功新增該課程下的回饋
+        403:
+          description: 無法新增該課程下的回饋
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法新增該課程下的回饋
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /course/{courseId}/feedback:
+    get:
+      tags:
+        - "course-api"
+      summary: ""
+      description: 取得該課程下的回饋
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseId
+          in: path
+          type: string
+          required: true
+      responses:
+        201:
+          description: 成功取得該課程下的回饋
+        403:
+          description: 無法取得該課程下的回饋
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法取得該課程下的回饋
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該課程的資料
+  /admin/student:
+    post:
+      tags:
+        - "admin-api"
+      summary: ""
+      description: 新增學生至系統
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              account:
+                type: string
+              password:
+                type: string
+              name:
+                type: string
+              studentClass:
+                type: string
+      responses:
+        201:
+          description: 成功新增學生至系統
+        403:
+          description: 無法新增學生至系統
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /problemBank:
+    post:
+      tags:
+        - "problemBank-api"
+      summary: ""
+      description: 在題庫中新增題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    inputSample:
+                      type: string
+                    outputSample:
+                      type: string
+      responses:
+        201:
+          description: 成功在題庫中新增題目
+        403:
+          description: 無法在題庫中新增題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+    put:
+      tags:
+        - "problemBank-api"
+      summary: ""
+      description: 在題庫中編輯題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              problemBankId:
+                type: string
+              name:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    inputSample:
+                      type: string
+                    outputSample:
+                      type: string
+      responses:
+        201:
+          description: 成功在題庫中編輯題目
+        403:
+          description: 無法在題庫中編輯題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法在題庫中編輯題目
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題庫中的題目
+    get:
+      tags:
+        - "problemBank-api"
+      summary: ""
+      description: 在題庫中取得所有題目
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 成功在題庫中取得所有題目
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                problemBankId:
+                  type: integer
+                name:
+                  type: string
+                category:
+                  type: string
+                tag:
+                  type: array
+                  items:
+                    type: string
+        403:
+          description: 無法在題庫中取得所有題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+  /problemBank/{problemBankId}:
+    get:
+      tags:
+        - "problemBank-api"
+      summary: ""
+      description: 在題庫中取得該題目詳細資訊
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemBankId
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: 成功在題庫中取得該題目詳細資訊
+          schema:
+            type: object
+            properties:
+              problemBankId:
+                type: string
+              name:
+                type: string
+              category:
+                type: string
+              tag:
+                type: array
+                items:
+                  type: string
+              description:
+                type: string
+              inputDesc:
+                type: string
+              outputDesc:
+                type: string
+              testCases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    inputSample:
+                      type: string
+                    outputSample:
+                      type: string
+        403:
+          description: 無法在題庫中取得該題目詳細資訊
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法在題庫中取得該題目詳細資訊
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題庫中的題目
+    delete:
+      tags:
+        - "problemBank-api"
+      summary: ""
+      description: 在題庫中刪除該題目
+      produces:
+        - "application/json"
+      parameters:
+        - name: problemBankId
+          in: path
+          type: integer
+          required: true
+      responses:
+        204:
+          description: 成功在題庫中刪除該題目
+        403:
+          description: 無法在題庫中刪除該題目
+          schema:
+            $ref: '#/definitions/forbiddenError'
+        404:
+          description: 無法在題庫中刪除該題目
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: 找不到該題庫中的題目
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
