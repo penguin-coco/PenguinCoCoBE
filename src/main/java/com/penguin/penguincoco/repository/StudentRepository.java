@@ -1,4 +1,4 @@
-package com.penguin.penguincoco;
+package com.penguin.penguincoco.repository;
 
 import com.penguin.penguincoco.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
