@@ -1,10 +1,10 @@
 package com.penguin.penguincoco.repository;
 
-import com.penguin.penguincoco.model.student.Student;
+import com.penguin.penguincoco.model.course.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface CourseRepository extends JpaRepository<Course, Long> {
 
 }
