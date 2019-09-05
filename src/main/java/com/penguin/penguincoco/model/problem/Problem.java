@@ -5,8 +5,6 @@ import com.penguin.penguincoco.model.copy.Copy;
 import com.penguin.penguincoco.model.course.Course;
 import com.penguin.penguincoco.model.judge.Judge;
 import com.penguin.penguincoco.model.student.Student;
-import com.vladmihalcea.hibernate.type.array.EnumArrayType;
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,20 +13,18 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @TypeDefs({
-        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
         @TypeDef(name = "json", typeClass = JsonStringType.class),
 })
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Problem extends BaseEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
@@ -66,37 +62,5 @@ public class Problem extends BaseEntity {
     private List<Copy> copies;
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Judge> judges;
-
-    public Problem(Course course, String name,
-                   com.penguin.penguincoco.model.problem.Type type, Category category,
-                   List<Language> languages, List<Tag> tags,
-                   List<String> patterns, double rate,
-                   String description, String inputDesc,
-                   String outputDesc, List<TestCase> testCases,
-                   Date deadline, int correctNum,
-                   int incorrectNum, double correctRate,
-                   Student bestStudent, List<Copy> copies,
-                   List<Judge> judges
-                   ) {
-        this.course = course;
-        this.name = name;
-        this.type = type;
-        this.category = category;
-        this.languages = languages;
-        this.tags = tags;
-        this.patterns = patterns;
-        this.rate = rate;
-        this.description = description;
-        this.inputDesc = inputDesc;
-        this.outputDesc = outputDesc;
-        this.testCases = testCases;
-        this.deadline = deadline;
-        this.correctNum = correctNum;
-        this.incorrectNum = incorrectNum;
-        this.correctRate = correctRate;
-        this.bestStudent = bestStudent;
-        this.copies = copies;
-        this.judges = judges;
-    }
 
 }

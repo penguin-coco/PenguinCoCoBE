@@ -1,8 +1,6 @@
 package com.penguin.penguincoco.model.problem;
 
 import com.penguin.penguincoco.model.base.BaseEntity;
-import com.vladmihalcea.hibernate.type.array.EnumArrayType;
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -12,7 +10,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @TypeDefs({
-        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
         @TypeDef(name = "json", typeClass = JsonStringType.class)})
 @EqualsAndHashCode(callSuper = true)
 @Entity

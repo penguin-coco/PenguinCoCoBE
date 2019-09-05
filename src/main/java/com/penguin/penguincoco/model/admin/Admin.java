@@ -1,7 +1,6 @@
 package com.penguin.penguincoco.model.admin;
 
 import com.penguin.penguincoco.model.base.AbstractUser;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
