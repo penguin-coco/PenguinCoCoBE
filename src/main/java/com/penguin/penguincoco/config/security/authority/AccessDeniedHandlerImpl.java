@@ -1,4 +1,4 @@
-package com.penguin.penguincoco.config;
+package com.penguin.penguincoco.config.security.authority;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;

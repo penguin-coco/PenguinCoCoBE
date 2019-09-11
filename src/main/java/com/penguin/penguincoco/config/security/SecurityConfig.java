@@ -1,5 +1,11 @@
-package com.penguin.penguincoco.config;
+package com.penguin.penguincoco.config.security;
 
+import com.penguin.penguincoco.config.security.authority.AccessDeniedHandlerImpl;
+import com.penguin.penguincoco.config.security.login.AuthenticationEntryPointImpl;
+import com.penguin.penguincoco.config.security.login.LoginAuthenticationFilter;
+import com.penguin.penguincoco.config.security.login.LoginFailureHandlerImpl;
+import com.penguin.penguincoco.config.security.login.LoginSuccessHandlerImpl;
+import com.penguin.penguincoco.config.security.logout.LogoutSuccessHandlerImpl;
 import com.penguin.penguincoco.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

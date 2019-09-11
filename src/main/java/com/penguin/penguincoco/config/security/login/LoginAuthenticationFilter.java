@@ -1,4 +1,4 @@
-package com.penguin.penguincoco.config;
+package com.penguin.penguincoco.config.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
