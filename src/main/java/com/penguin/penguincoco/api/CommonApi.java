@@ -17,15 +17,4 @@ import java.util.Map;
 @RestController
 public class CommonApi {
 
-    @Autowired
-    FakeService fakeService;
-
-    @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody Map<String, String> body) throws MyException {
-//        fakeService.fake();
-        Map<String, String> map = new HashMap<String, String>() {{
-            put("name", "Kenny");
-        }};
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
 }

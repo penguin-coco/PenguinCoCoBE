@@ -84,15 +84,6 @@ paths:
       responses:
         204:
           description: 登出成功
-        404:
-          description: 登出失敗
-          schema:
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: "使用者當前不為登入狀態"
   /student/password:
     put:
       tags:
