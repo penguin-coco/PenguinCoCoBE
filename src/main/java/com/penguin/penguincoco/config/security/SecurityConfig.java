@@ -27,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.securityService = securityService;
     }
 
+    /*
+        設定使用者權限驗證的service(連結DB)、使用者密碼加密
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(securityService)
@@ -35,11 +38,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*
+            未登入存取API控制及身分權限存取API控制
+         */
         http.exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                .and()
-                .addFilterAt(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .accessDeniedHandler(new AccessDeniedHandlerImpl());
+        /*
+            login API控制
+         */
+        http.addFilterAt(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        /*
+            logout API控制
+         */
         http.logout()
                 .logoutUrl("/api/logout")
                 .invalidateHttpSession(true)
@@ -49,6 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable();
     }
 
+    /*
+        設定Login API，登入成功及失敗的回覆
+     */
     @Bean
     LoginAuthenticationFilter loginAuthenticationFilter() throws Exception {
         LoginAuthenticationFilter filter = new LoginAuthenticationFilter();
@@ -59,6 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+    /*
+        取得預設的authenticationManagerBean，用來給LoginAuthenticationFilter設定
+     */
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

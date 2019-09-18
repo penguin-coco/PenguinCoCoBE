@@ -21,9 +21,6 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
     private final String LOGGED_IN = "logged_in";
 
-    @Autowired
-    FindByIndexNameSessionRepository<? extends Session> sessionRepository;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
