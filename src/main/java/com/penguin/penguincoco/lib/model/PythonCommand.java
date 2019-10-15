@@ -15,7 +15,13 @@ public class PythonCommand extends Command {
     @Override
     public List<String> getExecuteCommand() {
         List<String> command = new ArrayList<>();
-        command.add("python");
+        String osName= System.getProperty("os.name");
+        if (osName.equals("Linux")) {
+            command.add("python3");
+        }
+        else {
+            command.add("python");
+        }
         command.add(codeFileName);
         return command;
     }
