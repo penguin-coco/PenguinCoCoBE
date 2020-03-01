@@ -307,7 +307,6 @@ public class JudgeManagerImpl implements JudgeManager {
                 .sorted(Map.Entry.<Student, Integer>
                         comparingByValue().reversed())
                 .filter(e -> e.getValue() != 0)
-                .limit(5)
                 .map(e -> new CorrectRank(
                         e.getKey().getAccount(),
                         e.getKey().getName(),
@@ -349,7 +348,6 @@ public class JudgeManagerImpl implements JudgeManager {
                 .sorted(Map.Entry.<Student, Integer>
                         comparingByValue().reversed())
                 .filter(e -> e.getValue() != 0)
-                .limit(5)
                 .map(e -> new BestCodeRank(
                         e.getKey().getAccount(),
                         e.getKey().getName(),
