@@ -42,7 +42,7 @@ public class ReadAndPrint extends Behavior {
         else {
             problemResult = JudgeCalculator.executeTimeoutError();
         }
-        deleteRemainedFile();
+        //deleteRemainedFile();
     }
 
 }
