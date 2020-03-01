@@ -16,7 +16,6 @@ public class PythonCommand extends Command {
     public List<String> getExecuteCommand() {
         List<String> command = new ArrayList<>();
         String osName= System.getProperty("os.name");
-        command.add("PYTHONIOENCODING=utf-8");
         if (osName.equals("Linux")) {
             command.add("python3");
         }
