@@ -386,7 +386,7 @@ public class JudgeManagerImpl implements JudgeManager {
             String problemId = String.valueOf(problem.getId());
             String name = problem.getName();
             String type = problem.getType();
-            String deadline = new SimpleDateFormat("yyyy-MM-dd").format(problem.getDeadline());
+            String deadline = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(problem.getDeadline());
             String category = problem.getCategory();
             String[] tag = problem.getTag();
             String[] pattern = problem.getPattern();
