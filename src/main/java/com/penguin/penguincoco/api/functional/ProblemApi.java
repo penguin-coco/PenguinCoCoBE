@@ -93,7 +93,7 @@ public class ProblemApi extends BaseApi {
         List<TestCase> testCases = (List<TestCase>) map.get("testCases");
         String deadlineStr = map.get("deadline").toString();
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date deadline = df.parse(deadlineStr);
         try {
             Map<String, String> result = courseManager.createProblem(Long.parseLong(courseId), name, type, category,
