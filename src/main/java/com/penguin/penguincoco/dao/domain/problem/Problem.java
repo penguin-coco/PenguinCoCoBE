@@ -43,7 +43,7 @@ public class Problem extends BaseEntity {
     @Type(type = "json")
     @Column(columnDefinition = "json")
     private List<TestCase> testCases;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
     private int correctNum;
     private int incorrectNum;

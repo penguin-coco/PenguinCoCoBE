@@ -20,7 +20,12 @@ public enum JudgeSymbol implements JudgeSymbolMessage {
     },
     WA {
         public String getDescription() {
-            return "WA (Wrong Answer):表示答案錯誤";
+            return "WA (Wrong Answer):你的程式輸出結果與輸出解答不符呦！\n" +
+                    "\n" +
+                    "可以遵照以下幾個方法，檢視看看是哪裡錯誤：\n" +
+                    "1. 檢查是否有數學公式寫錯\n" +
+                    "2. 檢查是否有變數給值錯誤，可以將值打印出來檢查\n" +
+                    "3. 檢查是否有程式邏輯錯誤";
         }
         public String toString() {
             return "WA (Wrong Answer)";
@@ -52,7 +57,15 @@ public enum JudgeSymbol implements JudgeSymbolMessage {
     },
     RE {
         public String getDescription() {
-            return "RE (Runtime Error):表示執行時錯誤，通常為記憶體配置錯誤，如：使用了超過陣列大小的位置";
+            return "RE (Runtime Error):\n" +
+                    "你的程式在執行階段發生錯誤！\n" +
+                    "\n" +
+                    "可以參考以下除錯建議，檢視看看是哪裡錯誤：\n" +
+                    "1. 檢查是否有數學錯誤。如除0\n" +
+                    "2. 檢查是否有未知符號。如分號\n" +
+                    "3. 檢查是否有遺漏括弧\n" +
+                    "4. 檢查是否在條件句時，尾末有加上冒號，以執行條件程式\n" +
+                    "5. 檢查是否有語法錯誤";
         }
         public String toString() {
             return "RE (Runtime Error)";

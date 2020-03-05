@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class TestCase implements Serializable {
 
     private String inputSample;
-    private String outputSample;
+    private String outputSample1;
+    private String outputSample2;
 
 }

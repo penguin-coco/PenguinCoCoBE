@@ -58,7 +58,7 @@ public class JudgeManagerImpl implements JudgeManager {
         List<ProblemCase> problemCases = new ArrayList<>();
         for (TestCase testCase : testCases) {
             String inputSample = testCase.getInputSample();
-            String outputSample = testCase.getOutputSample();
+            String outputSample = testCase.getOutputSample2();
             ProblemCase problemCase = new ProblemCase(inputSample, outputSample);
             problemCases.add(problemCase);
         }
@@ -306,7 +306,6 @@ public class JudgeManagerImpl implements JudgeManager {
         List<CorrectRank> sorted = original.entrySet().stream()
                 .sorted(Map.Entry.<Student, Integer>
                         comparingByValue().reversed())
-                .filter(e -> e.getValue() != 0)
                 .map(e -> new CorrectRank(
                         e.getKey().getAccount(),
                         e.getKey().getName(),
@@ -314,6 +313,7 @@ public class JudgeManagerImpl implements JudgeManager {
                         "0"))
                 .collect(toList());
 
+        int rankNumber = 1;
         for (int i = 0; i < sorted.size(); i++) {
             if (i == 0) {
                 CorrectRank CorrectRank = sorted.get(i);
@@ -322,10 +322,11 @@ public class JudgeManagerImpl implements JudgeManager {
             else {
                 CorrectRank CorrectRank = sorted.get(i);
                 if (CorrectRank.getCorrectNum().equals(sorted.get(i - 1).getCorrectNum())) {
-                    CorrectRank.setRank(sorted.get(i - 1).getRank());
+                    CorrectRank.setRank(String.valueOf(rankNumber));
                 }
                 else {
-                    CorrectRank.setRank(String.valueOf(i + 1));
+                    rankNumber++;
+                    CorrectRank.setRank(String.valueOf(rankNumber));
                 }
             }
         }
@@ -347,7 +348,6 @@ public class JudgeManagerImpl implements JudgeManager {
         List<BestCodeRank> sorted = original.entrySet().stream()
                 .sorted(Map.Entry.<Student, Integer>
                         comparingByValue().reversed())
-                .filter(e -> e.getValue() != 0)
                 .map(e -> new BestCodeRank(
                         e.getKey().getAccount(),
                         e.getKey().getName(),
@@ -355,18 +355,20 @@ public class JudgeManagerImpl implements JudgeManager {
                         "0"))
                 .collect(toList());
 
+        int rankNumber = 1;
         for (int i = 0; i < sorted.size(); i++) {
             if (i == 0) {
                 BestCodeRank bestCodeRank = sorted.get(i);
-                bestCodeRank.setRank("1");
+                bestCodeRank.setRank(String.valueOf(rankNumber));
             }
             else {
                 BestCodeRank bestCodeRank = sorted.get(i);
                 if (bestCodeRank.getBestCodeNum().equals(sorted.get(i - 1).getBestCodeNum())) {
-                    bestCodeRank.setRank(sorted.get(i - 1).getRank());
+                    bestCodeRank.setRank(String.valueOf(rankNumber));
                 }
                 else {
-                    bestCodeRank.setRank(String.valueOf(i + 1));
+                    rankNumber++;
+                    bestCodeRank.setRank(String.valueOf(rankNumber));
                 }
             }
         }

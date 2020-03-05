@@ -92,9 +92,11 @@ public class ProblemApi extends BaseApi {
         String outputDesc = map.get("outputDesc").toString();
         List<TestCase> testCases = (List<TestCase>) map.get("testCases");
         String deadlineStr = map.get("deadline").toString();
+        System.out.println(deadlineStr);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date deadline = df.parse(deadlineStr);
+        System.out.println(deadline.toString());
         try {
             Map<String, String> result = courseManager.createProblem(Long.parseLong(courseId), name, type, category,
                     tag, description, inputDesc,
@@ -127,7 +129,7 @@ public class ProblemApi extends BaseApi {
         List<TestCase> testCases = (List<TestCase>) map.get("testCases");
         String deadlineStr = map.get("deadline").toString();
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date deadline = df.parse(deadlineStr);
         try {
             problemService.update(Long.parseLong(problemId), name,

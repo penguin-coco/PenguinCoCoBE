@@ -75,7 +75,7 @@ public class ProblemManagerImpl implements ProblemManager {
             map.put("problemId", String.valueOf(problem.getId()));
             map.put("name", problem.getName());
             map.put("type", problem.getType());
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             map.put("deadline", df.format(problem.getDeadline()));
             map.put("rate", String.valueOf(problem.getRate()));
             map.put("tag", problem.getTag());
@@ -105,7 +105,7 @@ public class ProblemManagerImpl implements ProblemManager {
                 Map<String, Object> problemResult = new HashMap<>();
                 String name = problem.getName();
                 String type = problem.getType();
-                String date = new SimpleDateFormat("yyyy-MM-dd").format(problem.getDeadline());
+                String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(problem.getDeadline());
                 List<HistoryCode> historyCode = new ArrayList<>();
                 boolean isJudge = judgeService.existByProblemAndStudent(problem, student);
                 if (isJudge) {
