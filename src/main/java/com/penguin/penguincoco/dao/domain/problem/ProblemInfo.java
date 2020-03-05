@@ -1,5 +1,6 @@
 package com.penguin.penguincoco.dao.domain.problem;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class ProblemInfo {
     private String inputDesc;
     private String outputDesc;
     private List<TestCase> testCases;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date deadline;
     private int correctNum;
     private int incorrectNum;
