@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ProblemManagerImpl implements ProblemManager {
@@ -76,7 +73,9 @@ public class ProblemManagerImpl implements ProblemManager {
             map.put("name", problem.getName());
             map.put("type", problem.getType());
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            map.put("deadline", df.format(problem.getDeadline()));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(problem.getDeadline());
+            map.put("deadline", df.format(calendar.getTime()));
             map.put("rate", String.valueOf(problem.getRate()));
             map.put("tag", problem.getTag());
             results.add(map);

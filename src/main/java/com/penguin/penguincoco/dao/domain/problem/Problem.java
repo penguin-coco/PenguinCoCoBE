@@ -1,5 +1,6 @@
 package com.penguin.penguincoco.dao.domain.problem;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.penguin.penguincoco.dao.domain.base.BaseEntity;
 import com.penguin.penguincoco.dao.domain.copy.Copy;
 import com.penguin.penguincoco.dao.domain.course.Course;
